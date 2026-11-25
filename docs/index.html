@@ -3,129 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Painel MtM — Carteiras de LTN</title>
-  <link rel="stylesheet" href="estilo.css">
-  <!-- Chart.js: biblioteca gratuita de gráficos, carregada direto da internet (CDN) -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <title>Download — Prestação de Contas do Interventor Judicial</title>
+  <style>
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center;
+           font-family: "Segoe UI", system-ui, sans-serif; background: #f4f6f9; color: #1d2433; }
+    .caixa { background: #fff; border: 1px solid #e3e7ee; border-radius: 12px;
+             padding: 32px 36px; max-width: 520px; text-align: center; }
+    h1 { font-size: 1.3rem; margin: 0 0 8px; }
+    p { color: #5b6578; margin: 0 0 24px; }
+    a { display: inline-block; background: #1f4fd1; color: #fff; text-decoration: none;
+        font-weight: 600; padding: 12px 28px; border-radius: 8px; }
+    a:hover { background: #173fa8; }
+  </style>
 </head>
 <body>
-
-<header>
-  <div>
-    <h1>Marcação a Mercado — Carteiras de LTN</h1>
-    <p class="subtitulo">Valor na Curva × Valor a Mercado · dados públicos do Tesouro Direto</p>
+  <div class="caixa">
+    <h1>Prestação de Contas do Interventor Judicial</h1>
+    <p>Arquivo PDF · 829 MB</p>
+    <a href="https://github.com/RafaAmft/mtm-rf/releases/download/arquivo-v1/prestacao-contas-interventor-judicial.pdf">Baixar o arquivo</a>
   </div>
-  <div class="cabecalho-direita">
-    <span id="selo-dq" class="selo">Carregando…</span>
-    <span id="data-base" class="data-base"></span>
-  </div>
-</header>
-
-<main>
-  <!-- Filtro de carteira: muda todos os números e gráficos da página -->
-  <section class="filtro">
-    <label for="filtro-carteira">Carteira</label>
-    <select id="filtro-carteira">
-      <option value="TODAS">Todas as carteiras</option>
-    </select>
-  </section>
-
-  <!-- Indicadores (KPIs) da data mais recente -->
-  <section class="kpis">
-    <div class="kpi"><span class="rotulo">PL a Mercado (MtM)</span><span class="valor" id="kpi-mtm">–</span></div>
-    <div class="kpi"><span class="rotulo">PL na Curva</span><span class="valor" id="kpi-curva">–</span></div>
-    <div class="kpi"><span class="rotulo">Ágio / Deságio</span><span class="valor" id="kpi-agio">–</span></div>
-    <div class="kpi"><span class="rotulo">P&amp;L do dia</span><span class="valor" id="kpi-pnl">–</span></div>
-    <div class="kpi"><span class="rotulo">DV01 (R$ por 1 bp)</span><span class="valor" id="kpi-dv01">–</span></div>
-    <div class="kpi"><span class="rotulo">Duration (anos)</span><span class="valor" id="kpi-duration">–</span></div>
-  </section>
-
-  <section class="grade">
-    <div class="cartao largo">
-      <h2>Evolução do PL: Curva × Mercado</h2>
-      <p class="nota">Os degraus são as datas em que as carteiras compraram títulos.</p>
-      <div class="area-grafico"><canvas id="graf-evolucao"></canvas></div>
-    </div>
-
-    <div class="cartao">
-      <h2 id="titulo-agio">Ágio / Deságio por carteira</h2>
-      <p class="nota">Positivo: o título vale mais hoje do que pela taxa de compra.</p>
-      <div class="area-grafico"><canvas id="graf-agio"></canvas></div>
-    </div>
-
-    <div class="cartao">
-      <h2>Curva de juros prefixada (LTN)</h2>
-      <p class="nota">Taxa de mercado de cada vencimento na data mais recente.</p>
-      <div class="area-grafico"><canvas id="graf-curva"></canvas></div>
-    </div>
-
-    <div class="cartao largo">
-      <h2>P&amp;L diário</h2>
-      <p class="nota">Quanto o valor a mercado subiu ou caiu de um dia útil para o outro.</p>
-      <div class="area-grafico baixo"><canvas id="graf-pnl"></canvas></div>
-    </div>
-  </section>
-
-  <section class="cartao">
-    <h2>Posições na data mais recente</h2>
-    <div class="rolagem">
-      <table id="tabela-posicoes">
-        <thead>
-          <tr>
-            <th>Carteira</th><th>Título</th><th class="num">Qtd.</th>
-            <th class="num">Taxa compra</th><th class="num">Taxa mercado</th>
-            <th class="num">PU curva</th><th class="num">PU MtM</th>
-            <th class="num">Valor MtM</th><th class="num">Ágio/Deságio</th><th class="num">DV01</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </section>
-
-  <section class="cartao">
-    <h2>Qualidade dos dados (última execução)</h2>
-    <div class="rolagem">
-      <table id="tabela-dq">
-        <thead><tr><th>Regra</th><th>Severidade</th><th>Status</th><th class="num">Linhas afetadas</th><th>Detalhe</th></tr></thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </section>
-
-  <section class="grade">
-    <div class="cartao">
-      <h2>Baixar os dados</h2>
-      <p class="nota">Os mesmos arquivos que alimentam esta página. Abra no Excel ou no Power BI.</p>
-      <ul class="downloads">
-        <li><a href="dados/fato_posicao_mtm.csv" download>fato_posicao_mtm.csv</a> — posição diária de cada título</li>
-        <li><a href="dados/vw_resumo_carteira.csv" download>vw_resumo_carteira.csv</a> — totais diários por carteira</li>
-        <li><a href="dados/dim_carteira.csv" download>dim_carteira.csv</a> — cadastro das carteiras</li>
-        <li><a href="dados/dim_titulo.csv" download>dim_titulo.csv</a> — cadastro dos títulos</li>
-        <li><a href="dados/vw_qualidade_dados.csv" download>vw_qualidade_dados.csv</a> — log de qualidade de dados</li>
-        <!-- Aparece sozinho quando você colocar o arquivo docs/dados/painel_mtm.pbix no repositório -->
-        <li id="link-pbix" hidden><a href="dados/painel_mtm.pbix" download>painel_mtm.pbix</a> — painel pronto do Power BI</li>
-      </ul>
-    </div>
-
-    <div class="cartao">
-      <h2>Como o cálculo funciona</h2>
-      <p>A LTN paga <b>R$ 1.000</b> no vencimento e nada antes. O preço hoje (PU) é esse valor trazido a valor presente:</p>
-      <p class="formula">PU = 1000 / (1 + taxa)<sup>dias úteis / 252</sup></p>
-      <ul class="explica">
-        <li><b>Na curva:</b> usa a taxa da compra. O valor cresce de forma suave até R$ 1.000.</li>
-        <li><b>A mercado (MtM):</b> usa a taxa de hoje. Mostra quanto a carteira valeria se vendesse agora.</li>
-        <li><b>Ágio/Deságio:</b> diferença entre os dois. Juros subiram → deságio; caíram → ágio.</li>
-        <li><b>DV01:</b> quanto a carteira perde se a taxa subir 0,01 ponto percentual.</li>
-      </ul>
-    </div>
-  </section>
-</main>
-
-<footer>
-  Fonte: Tesouro Transparente (preços e taxas do Tesouro Direto). Projeto de estudo — não é recomendação de investimento.
-</footer>
-
-<script src="painel.js"></script>
 </body>
 </html>
