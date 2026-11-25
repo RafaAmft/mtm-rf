@@ -11,6 +11,9 @@ GOLD_DIR = DATA_DIR / "gold"
 
 DB_PATH = GOLD_DIR / "mtm_rf.db"
 
+# Pasta publicada no GitHub Pages: o painel web lê (e oferece para download) os CSVs daqui
+SITE_DADOS_DIR = ROOT_DIR / "docs" / "dados"
+
 POSICOES_PATH = SAMPLE_DIR / "posicoes_clientes.csv"
 SAMPLE_PRECOS_PATH = SAMPLE_DIR / "precos_tesouro_sample.csv"
 

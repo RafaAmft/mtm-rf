@@ -7,7 +7,7 @@ from typing import List
 
 import pandas as pd
 
-from mtm.config import DB_PATH, GOLD_DIR
+from mtm.config import DB_PATH, GOLD_DIR, SITE_DADOS_DIR
 from mtm.quality import ResultadoDQ
 
 logger = logging.getLogger(__name__)
@@ -243,8 +243,15 @@ def carregar_gold(
 
 
 def exportar_csvs_gold(conn: sqlite3.Connection) -> None:
-    """Exporta tabelas e views da camada Gold em CSV para consumo no Power BI."""
+    """
+    Exporta tabelas e views da camada Gold em CSV para consumo no Power BI.
+    Grava os mesmos arquivos em duas pastas:
+      - data/gold/   -> uso local (não vai para o Git)
+      - docs/dados/  -> vai para o Git e alimenta o painel do GitHub Pages
+    """
+    SITE_DADOS_DIR.mkdir(parents=True, exist_ok=True)
     for nome in ["dim_carteira", "dim_titulo", "fato_posicao_mtm", "vw_resumo_carteira", "vw_qualidade_dados"]:
         df_exp = pd.read_sql_query(f"SELECT * FROM {nome}", conn)
-        df_exp.to_csv(GOLD_DIR / f"{nome}.csv", index=False, encoding="utf-8-sig")
-    logger.info("CSVs Gold exportados em %s", GOLD_DIR)
+        for pasta in (GOLD_DIR, SITE_DADOS_DIR):
+            df_exp.to_csv(pasta / f"{nome}.csv", index=False, encoding="utf-8-sig")
+    logger.info("CSVs Gold exportados em %s e %s", GOLD_DIR, SITE_DADOS_DIR)

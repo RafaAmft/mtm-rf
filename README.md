@@ -21,6 +21,10 @@ flowchart LR
 
 ---
 
+## Painel online
+
+**[rafaamft.github.io/mtm-rf](https://rafaamft.github.io/mtm-rf/)** — painel web com os mesmos dados da camada Gold, filtro por carteira e download dos CSVs para o Power BI. É atualizado a cada execução do pipeline (`docs/dados/`).
+
 ## Dashboard (Power BI)
 
 ![Dashboard MtM Renda Fixa](docs/dashboard_powerbi.png)

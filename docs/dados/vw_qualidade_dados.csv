@@ -1,0 +1,5 @@
+﻿run_id,inicio_utc,status_execucao,regra,severidade,status_regra,linhas_afetadas,detalhe
+1,2026-11-24 11:51:32,SUCESSO,DQ_UNICIDADE,BLOQUEANTE,OK,0,"Chave (data_base, codigo_titulo) única"
+1,2026-11-24 11:51:32,SUCESSO,DQ_VALIDADE,BLOQUEANTE,OK,0,Todas as taxas e PUs dentro da faixa esperada
+1,2026-11-24 11:51:32,SUCESSO,DQ_COMPLETUDE,BLOQUEANTE,OK,0,Todos os títulos em carteira precificados em 2026-11-19
+1,2026-11-24 11:51:32,SUCESSO,DQ_REPRICE,ALERTA,OK,0,PU calculado dentro da tolerância de R$ 0.50
